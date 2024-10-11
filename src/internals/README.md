@@ -37,6 +37,6 @@ Since it uses `_getch()`, it only works on Windows.
 Implements `readKey()` and `readChar()` functions.
 `readKey()` depends upon `_kbhit()`, so both functions will only work on Windows.
 
-README.md
+`README.md`
 =========
 You're reading this now.

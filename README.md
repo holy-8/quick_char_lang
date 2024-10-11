@@ -11,5 +11,5 @@ Open terminal in the root directory, and execute the following commands:
 cmake -B build
 cmake --build build
 ```
-This will build the binary, which ends up here: `build/debug/QCL!.exe`.
+This will build the binary, which ends up here: `build/debug/QCL.exe`.
 That's it.

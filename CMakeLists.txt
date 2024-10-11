@@ -4,13 +4,14 @@ project(quick_char_lang VERSION 1.0 LANGUAGES C)
 add_executable(
     "QCL"
     src/interpreter/main.c
-    src/internals/stringio.c
-    src/internals/readchar.c
-    src/internals/keyinfo.c
-    src/internals/chardict.c
-    src/internals/linkedlist.c
-    src/internals/garbagecollector.c
-    src/internals/panic.c
+    src/internals/data_structures/chardict.c
+    src/internals/data_structures/linkedlist.c
+    src/internals/data_structures/stringio.c
+    src/internals/heap/garbagecollector.c
+    src/internals/heap/heapobjects.c
+    src/internals/heap/panic.c
+    src/internals/io/keyinfo.c
+    src/internals/io/readchar.c
 )
 
 target_include_directories("QCL" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")

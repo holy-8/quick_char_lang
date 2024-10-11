@@ -21,6 +21,4 @@ void GarbageCollectorClear(GarbageCollector* this);
 
 void GarbageCollectorDestroy(GarbageCollector* this);
 
-void* shortNew(GarbageCollector* gc, short value);
-
 #endif /* __GARBAGECOLLECTOR_H_ */

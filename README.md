@@ -7,7 +7,7 @@ To be more exact, this is a second attempt (You can find initial code at `old` b
 And i feel like it's much worse than the first one... I mean, yes, it is.
 But i just want to finish this thing.
 
-Alongside not being finished it doesn't even build currently. Absolute cinema.
+Now it even builds.
 
 How to build
 ============

@@ -1,11 +1,6 @@
 #include <stdlib.h>
 
-typedef struct ShortStack
-{
-    short* data;
-    size_t cap;
-    size_t size;
-} ShortStack;
+#include "DataTypes.h"
 
 ShortStack*
 ShortStack_new(const size_t cap)

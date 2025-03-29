@@ -4,7 +4,9 @@ char
 get_index(const char name)
 {
     if ('A' <= name <= 'Z')
+    {
         return name - 65;
+    }
     return name - 71;
 }
 

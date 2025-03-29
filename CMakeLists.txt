@@ -7,6 +7,7 @@ add_executable(
     src/interpreter/Parser.c
     src/interpreter/VMState.c
     src/datatypes/BracketStack.c
+    src/datatypes/DataTypes.c
     src/datatypes/InstructionStack.c
     src/datatypes/ProcedureStack.c
     src/datatypes/ShortStack.c

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "DataTypes.h"
 #include "ShortStack.h"
 #include "ProcedureStack.h"
 #include "InstructionStack.h"

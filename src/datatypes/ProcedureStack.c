@@ -1,22 +1,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "DataTypes.h"
 #include "InstructionStack.h"
-#include "VMState.h"
-
-typedef struct Variable
-{
-    bool is_defined;
-    short value;
-} Variable;
-
-typedef struct Procedure
-{
-    VMState* vm;
-    Variable local_vars[52];
-    InstructionStack* iarr;
-    size_t iptr;
-} Procedure;
 
 Procedure*
 Procedure_new(VMState* vm)
@@ -49,13 +35,6 @@ Procedure_copy(Procedure* this)
     }
     return copy;
 }
-
-typedef struct ProcedureStack
-{
-    Procedure** data;
-    size_t cap;
-    size_t size;
-} ProcedureStack;
 
 ProcedureStack*
 ProcedureStack_new(const size_t cap)

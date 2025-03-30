@@ -3,12 +3,12 @@
 #include "DataTypes.h"
 
 BracketStack*
-BracketStack_new(const size_t cap)
+BracketStack_new(const size_t capacity)
 {
     BracketStack* this = calloc(1, sizeof(BracketStack));
-    this->data = calloc(cap, sizeof(BracketPos));
-    this->cap = cap;
-    this->size = 0;
+    this->data = calloc(capacity, sizeof(BracketPos));
+    this->capacity = capacity;
+    this->length = 0;
     return this;
 }
 
@@ -20,28 +20,27 @@ BracketStack_free(BracketStack* this)
 }
 
 void
-BracketStack_resize(BracketStack* this, const size_t cap)
+BracketStack_resize(BracketStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, cap);
-    this->cap = cap;
+    this->data = realloc(this->data, capacity);
+    this->capacity = capacity;
 }
 
 void
 BracketStack_append(BracketStack* this, const BracketPos item)
 {
-    if (this->size >= this->cap)
+    if (this->length >= this->capacity)
     {
-        BracketStack_resize(this, (size_t) this->cap * 1.5);
+        BracketStack_resize(this, (size_t) this->capacity * 1.5);
     }
-    this->data[this->size] = item;
-    this->size++;
+    this->data[this->length] = item;
+    this->length++;
 }
 
 BracketPos
 BracketStack_pop(BracketStack* this)
 {
-    BracketPos value = this->data[this->size - 1];
-    this->data[this->size - 1] = (BracketPos) { .symbol = '\0', .address = 0, .procedure = NULL };
-    this->size--;
+    BracketPos value = this->data[this->length - 1];
+    this->length--;
     return value;
 }

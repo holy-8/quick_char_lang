@@ -3,12 +3,12 @@
 #include "DataTypes.h"
 
 ShortStack*
-ShortStack_new(const size_t cap)
+ShortStack_new(const size_t capacity)
 {
     ShortStack* this = calloc(1, sizeof(ShortStack));
-    this->data = calloc(cap, sizeof(short));
-    this->cap = cap;
-    this->size = 0;
+    this->data = calloc(capacity, sizeof(short));
+    this->capacity = capacity;
+    this->length = 0;
     return this;
 }
 
@@ -20,36 +20,35 @@ ShortStack_free(ShortStack* this)
 }
 
 void
-ShortStack_resize(ShortStack* this, const size_t cap)
+ShortStack_resize(ShortStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, cap);
-    this->cap = cap;
+    this->data = realloc(this->data, capacity);
+    this->capacity = capacity;
 }
 
 void
 ShortStack_append(ShortStack* this, const short item)
 {
-    if (this->size >= this->cap)
+    if (this->length >= this->capacity)
     {
-        ShortStack_resize(this, (size_t) this->cap * 1.5);
+        ShortStack_resize(this, (size_t) this->capacity * 1.5);
     }
-    this->data[this->size] = item;
-    this->size++;
+    this->data[this->length] = item;
+    this->length++;
 }
 
 short
 ShortStack_pop(ShortStack* this)
 {
-    short value = this->data[this->size - 1];
-    this->data[this->size - 1] = 0;
-    this->size--;
+    short value = this->data[this->length - 1];
+    this->length--;
     return value;
 }
 
 void
 ShortStack_extend(ShortStack* this, ShortStack* other)
 {
-    for (size_t i = 0; i < other->size; i++)
+    for (size_t i = 0; i < other->length; i++)
     {
         ShortStack_append(this, other->data[i]);
     }
@@ -58,10 +57,10 @@ ShortStack_extend(ShortStack* this, ShortStack* other)
 ShortStack*
 ShortStack_slice(ShortStack* this, const size_t size)
 {
-    ShortStack* slice = ShortStack_new(this->cap);
+    ShortStack* slice = ShortStack_new(this->capacity);
     for (size_t i = 0; i < size; i++)
     {
-        ShortStack_append(slice, this->data[this->size - size + i]);
+        ShortStack_append(slice, this->data[this->length - size + i]);
     }
     return slice;
 }
@@ -69,8 +68,8 @@ ShortStack_slice(ShortStack* this, const size_t size)
 ShortStack*
 ShortStack_reversed(ShortStack* this)
 {
-    ShortStack* reversed = ShortStack_new(this->cap);
-    for (size_t i = this->size - 1; i >= 0; i++)
+    ShortStack* reversed = ShortStack_new(this->capacity);
+    for (size_t i = this->length - 1; i >= 0; i++)
     {
         ShortStack_append(reversed, this->data[i]);
     }
@@ -82,16 +81,16 @@ ShortStack_reversed_size(ShortStack* this, const size_t size)
 {
     if (size < 2)
     {
-        return ShortStack_slice(this, this->size);
+        return ShortStack_slice(this, this->length);
     }
-    if (size == this->size)
+    if (size == this->length)
     {
         return ShortStack_reversed(this);
     }
-    ShortStack* copy = ShortStack_slice(this, this->size);
+    ShortStack* copy = ShortStack_slice(this, this->length);
 
     ShortStack* slice = ShortStack_slice(copy, size);
-    copy->size -= size;
+    copy->length -= size;
 
     ShortStack* reversed_slice = ShortStack_reversed(slice);
     ShortStack_extend(copy, reversed_slice);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -8,6 +9,7 @@ typedef struct InstructionStack InstructionStack;
 
 typedef enum InstructionType
 {
+    iNone,
     iPushZero,
     iIncrement,
     iDecrement,
@@ -35,8 +37,8 @@ typedef enum InstructionType
 typedef struct ShortStack
 {
     short* data;
-    size_t cap;
-    size_t size;
+    size_t capacity;
+    size_t length;
 } ShortStack;
 
 typedef struct Variable
@@ -49,25 +51,25 @@ typedef struct Procedure
 {
     VMState* vm;
     Variable local_vars[52];
-    InstructionStack* iarr;
-    size_t iptr;
+    InstructionStack* instruction_array;
+    size_t instruction_pointer;
 } Procedure;
 
 typedef struct ProcedureStack
 {
     Procedure** data;
-    size_t cap;
-    size_t size;
+    size_t capacity;
+    size_t length;
 } ProcedureStack;
 
 typedef struct Instruction
 {
     InstructionType type;
-    char arg;
+    char argument;
     union
     {
     Procedure* procedure;
-    size_t jumpptr;
+    size_t jump_address;
     size_t counter;
     } optional;
 } Instruction;
@@ -75,8 +77,8 @@ typedef struct Instruction
 struct InstructionStack
 {
     Instruction* data;
-    size_t cap;
-    size_t size;
+    size_t capacity;
+    size_t length;
 };
 
 typedef struct BracketPos
@@ -89,8 +91,8 @@ typedef struct BracketPos
 typedef struct BracketStack
 {
     BracketPos* data;
-    size_t cap;
-    size_t size;
+    size_t capacity;
+    size_t length;
 } BracketStack;
 
 typedef struct ProcedureVariable
@@ -107,3 +109,12 @@ struct VMState
     ProcedureStack* call_stack;
     ProcedureStack* all_procedures;
 };
+
+typedef struct ReadBuffer
+{
+    FILE* file;
+    char* buffer;
+    size_t capacity;
+    size_t length;
+} ReadBuffer;
+/* Generated from src/datatypes/DataTypes.c */

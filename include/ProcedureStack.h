@@ -9,20 +9,28 @@
 Procedure*
 Procedure_new(VMState* vm);
 
+
 void
 Procedure_free(Procedure* this);
+
 
 Procedure*
 Procedure_copy(Procedure* this);
 
+
 ProcedureStack*
-ProcedureStack_new(const size_t cap);
+ProcedureStack_new(const size_t capacity);
+
 
 void
 ProcedureStack_free(ProcedureStack* this);
 
-void
-ProcedureStack_resize(ProcedureStack* this, const size_t cap);
 
 void
-ProcedureStack_append(ProcedureStack* this, const Procedure* item);
+ProcedureStack_resize(ProcedureStack* this, const size_t capacity);
+
+
+void
+ProcedureStack_append(ProcedureStack* this, Procedure* item);
+
+/* Generated from src/datatypes/ProcedureStack.c */

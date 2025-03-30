@@ -10,6 +10,7 @@ add_executable(
     src/datatypes/DataTypes.c
     src/datatypes/InstructionStack.c
     src/datatypes/ProcedureStack.c
+    src/datatypes/ReadBuffer.c
     src/datatypes/ShortStack.c
 )
 

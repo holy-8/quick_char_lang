@@ -13,15 +13,15 @@ Procedure_new(VMState* vm)
     {
         this->local_vars[i] = (Variable) { .is_defined = false };
     }
-    this->iarr = InstructionStack_new(8);
-    this->iptr = 0;
+    this->instruction_array = InstructionStack_new(8);
+    this->instruction_pointer = 0;
     return this;
 }
 
 void
 Procedure_free(Procedure* this)
 {
-    InstructionStack_free(this->iarr);
+    InstructionStack_free(this->instruction_array);
     free(this);
 }
 
@@ -29,27 +29,29 @@ Procedure*
 Procedure_copy(Procedure* this)
 {
     Procedure* copy = Procedure_new(this->vm);
-    for (size_t i = 0; i < this->iarr->size; i++)
+    for (size_t i = 0; i < this->instruction_array->length; i++)
     {
-        InstructionStack_append(copy->iarr, this->iarr->data[i]);
+        InstructionStack_append(
+            copy->instruction_array, this->instruction_array->data[i]
+        );
     }
     return copy;
 }
 
 ProcedureStack*
-ProcedureStack_new(const size_t cap)
+ProcedureStack_new(const size_t capacity)
 {
     ProcedureStack* this = calloc(1, sizeof(ProcedureStack));
-    this->data = calloc(cap, sizeof(Procedure*));
-    this->cap = cap;
-    this->size = 0;
+    this->data = calloc(capacity, sizeof(Procedure*));
+    this->capacity = capacity;
+    this->length = 0;
     return this;
 }
 
 void
 ProcedureStack_free(ProcedureStack* this)
 {
-    for (size_t i = 0; i < this->size; i++)
+    for (size_t i = 0; i < this->length; i++)
     {
         Procedure_free(this->data[i]);
     }
@@ -58,19 +60,19 @@ ProcedureStack_free(ProcedureStack* this)
 }
 
 void
-ProcedureStack_resize(ProcedureStack* this, const size_t cap)
+ProcedureStack_resize(ProcedureStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, cap);
-    this->cap = cap;
+    this->data = realloc(this->data, capacity);
+    this->capacity = capacity;
 }
 
 void
-ProcedureStack_append(ProcedureStack* this, const Procedure* item)
+ProcedureStack_append(ProcedureStack* this, Procedure* item)
 {
-    if (this->size >= this->cap)
+    if (this->length >= this->capacity)
     {
-        ProcedureStack_resize(this, (size_t) this->cap * 1.5);
+        ProcedureStack_resize(this, (size_t) this->capacity * 1.5);
     }
-    this->data[this->size] = item;
-    this->size++;
+    this->data[this->length] = item;
+    this->length++;
 }

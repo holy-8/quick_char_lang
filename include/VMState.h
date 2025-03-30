@@ -10,5 +10,8 @@
 VMState*
 VMState_new(void);
 
+
 void
 VMState_free(VMState* this);
+
+/* Generated from src/interpreter/VMState.c */

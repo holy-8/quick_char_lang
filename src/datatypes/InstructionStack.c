@@ -22,7 +22,7 @@ InstructionStack_free(InstructionStack* this)
 void
 InstructionStack_resize(InstructionStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, capacity);
+    this->data = realloc(this->data, capacity * sizeof(Instruction));
     this->capacity = capacity;
 }
 
@@ -31,7 +31,7 @@ InstructionStack_append(InstructionStack* this, Instruction item)
 {
     if (this->length >= this->capacity)
     {
-        InstructionStack_resize(this, (size_t) this->capacity * 1.5);
+        InstructionStack_resize(this, (size_t) (this->capacity * 1.5));
     }
     this->data[this->length] = item;
     this->length++;

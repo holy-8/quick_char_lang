@@ -19,7 +19,7 @@ is_a_letter(const char name);
 
 
 bool
-try_comment(bool* is_comment, ReadBuffer* buffer);
+try_comment(ReadBuffer* buffer);
 
 
 size_t

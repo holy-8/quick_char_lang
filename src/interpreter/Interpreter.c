@@ -18,88 +18,89 @@ get_index(const char name)
 char*
 repr_instruction_type(InstructionType type)
 {
-    char* buffer = calloc(32, sizeof(char));
     switch (type)
     {
     case iNone:
-        strcpy(buffer, "iNone");
+        return "iNone";
         break;
     case iPushZero:
-        strcpy(buffer, "iPushZero");
+        return "iPushZero";
         break;
     case iIncrement:
-        strcpy(buffer, "iIncrement");
+        return "iIncrement";
         break;
     case iDecrement:
-        strcpy(buffer, "iDecrement");
+        return "iDecrement";
         break;
     case iAdd:
-        strcpy(buffer, "iAdd");
+        return "iAdd";
         break;
     case iSubtract:
-        strcpy(buffer, "iSubtract");
+        return "iSubtract";
         break;
     case iReverse:
     case iReverseNull:
-        strcpy(buffer, "iReverse");
+        return "iReverse";
         break;
     case iAssign:
     case iAssignNull:
-        strcpy(buffer, "iAssign");
+        return "iAssign";
         break;
     case iDelete:
     case iDeleteNull:
-        strcpy(buffer, "iDelete");
+        return "iDelete";
         break;
     case iPush:
     case iPushNull:
-        strcpy(buffer, "iPush");
+        return "iPush";
         break;
     case iAssignLocal:
     case iAssignLocalNull:
-        strcpy(buffer, "iAssignLocal");
+        return "iAssignLocal";
         break;
     case iOutput:
     case iOutputNull:
-        strcpy(buffer, "iOutput");
+        return "iOutput";
         break;
     case iInput:
     case iInputNull:
-        strcpy(buffer, "iInput");
+        return "iInput";
         break;
     case iCall:
     case iCallNull:
-        strcpy(buffer, "iCall");
+        return "iCall";
         break;
     case iEnd:
-        strcpy(buffer, "iEnd");
+        return "iEnd";
         break;
     case iContinue:
-        strcpy(buffer, "iContinue");
+        return "iContinue";
         break;
     case iDefineProcedure:
-        strcpy(buffer, "iDefineProcedure");
+        return "iDefineProcedure";
         break;
     case iInfiniteStart:
-        strcpy(buffer, "iInfiniteStart");
+        return "iInfiniteStart";
         break;
     case iRepeatStart:
-        strcpy(buffer, "iRepeatStart");
+        return "iRepeatStart";
         break;
     case iConditionalStart:
-        strcpy(buffer, "iConditionalStart");
+        return "iConditionalStart";
         break;
     case iInfiniteEnd:
-        strcpy(buffer, "iInfiniteEnd");
+        return "iInfiniteEnd";
         break;
     case iRepeatEnd:
-        strcpy(buffer, "iRepeatEnd");
+        return "iRepeatEnd";
         break;
     case iConditionalEnd:
-        strcpy(buffer, "iConditionalEnd");
+        return "iConditionalEnd";
+        break;
+    default:
+        return "Invalid instruction type";
         break;
     }
-    return buffer;
 }
 
 void
@@ -177,7 +178,6 @@ void
 repr_procedure(const size_t index, Procedure* procedure)
 {
     printf("%lld: Procedure (address: %p)\n", index, procedure);
-
     for (size_t i = 0; i < procedure->instruction_array->length; i++)
     {
         repr_instruction(i, procedure->instruction_array->data[i]);

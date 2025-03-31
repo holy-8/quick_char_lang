@@ -22,7 +22,7 @@ ShortStack_free(ShortStack* this)
 void
 ShortStack_resize(ShortStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, capacity);
+    this->data = realloc(this->data, capacity * sizeof(short));
     this->capacity = capacity;
 }
 
@@ -31,7 +31,7 @@ ShortStack_append(ShortStack* this, const short item)
 {
     if (this->length >= this->capacity)
     {
-        ShortStack_resize(this, (size_t) this->capacity * 1.5);
+        ShortStack_resize(this, (size_t) (this->capacity * 1.5));
     }
     this->data[this->length] = item;
     this->length++;

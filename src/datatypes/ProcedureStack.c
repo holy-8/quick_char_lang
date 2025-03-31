@@ -62,7 +62,7 @@ ProcedureStack_free(ProcedureStack* this)
 void
 ProcedureStack_resize(ProcedureStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, capacity);
+    this->data = realloc(this->data, capacity * sizeof(Procedure*));
     this->capacity = capacity;
 }
 
@@ -71,7 +71,7 @@ ProcedureStack_append(ProcedureStack* this, Procedure* item)
 {
     if (this->length >= this->capacity)
     {
-        ProcedureStack_resize(this, (size_t) this->capacity * 1.5);
+        ProcedureStack_resize(this, (size_t) (this->capacity * 1.5));
     }
     this->data[this->length] = item;
     this->length++;

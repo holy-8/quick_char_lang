@@ -27,28 +27,28 @@ is_a_letter(const char name)
 }
 
 bool
-try_comment(bool* is_comment, ReadBuffer* buffer)
+try_comment(ReadBuffer* buffer)
 {
+    static bool is_comment;
     char last_char = ReadBuffer_peek(buffer);
+    if (is_comment)
+    {
+        ReadBuffer_pop(buffer);
+        is_comment = (bool) (last_char != '\n');
+        return true;
+    }
     switch (last_char)
     {
     case '\n':
     case '\t':
+    case '\'':
     case ' ':
         ReadBuffer_pop(buffer);
-        return true;
-        break;
-    case '\'':
-        ReadBuffer_pop(buffer);
-        *is_comment = true;
+        is_comment = (bool) (last_char == '\'');
         return true;
         break;
     default:
-        if (*is_comment)
-        {
-            ReadBuffer_pop(buffer);
-        }
-        return *is_comment;
+        return false;
         break;
     }
 }
@@ -528,11 +528,11 @@ parse_file(FILE* file)
 
     ReadBuffer* buffer = ReadBuffer_new(file, 2);
     BracketStack* bracket_stack = BracketStack_new(8);
-    bool is_comment = false;
 
     while (ReadBuffer_read(buffer))
     {
-        if (try_comment(&is_comment, buffer))
+
+        if (try_comment(buffer))
         {
             continue;
         }

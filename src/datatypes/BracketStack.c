@@ -22,7 +22,7 @@ BracketStack_free(BracketStack* this)
 void
 BracketStack_resize(BracketStack* this, const size_t capacity)
 {
-    this->data = realloc(this->data, capacity);
+    this->data = realloc(this->data, capacity * sizeof(BracketPos));
     this->capacity = capacity;
 }
 
@@ -31,7 +31,7 @@ BracketStack_append(BracketStack* this, const BracketPos item)
 {
     if (this->length >= this->capacity)
     {
-        BracketStack_resize(this, (size_t) this->capacity * 1.5);
+        BracketStack_resize(this, (size_t) (this->capacity * 1.5));
     }
     this->data[this->length] = item;
     this->length++;

@@ -16,6 +16,10 @@ bool
 try_comment(bool* is_comment, ReadBuffer* buffer);
 
 
+size_t
+get_current_address(VMState* vm, BracketStack* bracket_stack);
+
+
 void
 append_instruction(VMState* vm, BracketStack* bracket_stack, Instruction instruction);
 
@@ -28,29 +32,48 @@ size_t
 get_context_jump_address(BracketStack* bracket_stack);
 
 
+Instruction
+get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address);
+
+
+void
+overwrite_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address, Instruction instruction);
+
+
 bool
 try_simple_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer);
 
-        );
-        goto success;
-        break;
-    default:
-        goto fail;
-        break;
-    }
-    success:
-        ReadBuffer_clear(buffer);
-        return true;
-    fail:
-        return false;
-}
+
+bool
+try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer);
+
+
+bool
+try_argument_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer);
+
+
+bool
+try_end_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer);
+
 
 bool
 try_unknown_symbol(ReadBuffer* buffer);
 
 
 bool
+try_unexpected_end(BracketStack* bracket_stack, ReadBuffer* buffer);
+
+
+bool
+try_invalid_end(BracketStack* bracket_stack, ReadBuffer* buffer);
+
+
+bool
 try_name_error(ReadBuffer* buffer);
+
+
+bool
+try_argument_error(ReadBuffer* buffer);
 
 
 VMState*

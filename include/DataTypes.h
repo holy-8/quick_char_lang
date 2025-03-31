@@ -16,14 +16,22 @@ typedef enum InstructionType
     iAdd,
     iSubtract,
     iReverse,
+    iReverseNull,
     iAssign,
+    iAssignNull,
     iDelete,
+    iDeleteNull,
     iPush,
+    iPushNull,
     iAssignLocal,
+    iAssignLocalNull,
     iOutput,
+    iOutputNull,
     iInput,
+    iInputNull,
     iDefineProcedure,
     iCall,
+    iCallNull,
     iInfiniteStart,
     iInfiniteEnd,
     iRepeatStart,
@@ -66,7 +74,7 @@ typedef struct Instruction
 {
     InstructionType type;
     char argument;
-    union
+    struct
     {
     Procedure* procedure;
     size_t jump_address;

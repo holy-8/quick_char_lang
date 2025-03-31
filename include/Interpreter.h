@@ -2,12 +2,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "DataTypes.h"
 #include "Parser.h"
 
 char
 get_index(const char name);
+
+
+char*
+repr_instruction_type(InstructionType type);
 
 
 void

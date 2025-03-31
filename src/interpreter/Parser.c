@@ -10,28 +10,53 @@
 #include "BracketStack.h"
 #include "ReadBuffer.h"
 
+typedef long long ssize_t;
+
+bool
+is_a_letter(const char name)
+{
+    if (('A' <= name) && (name <= 'Z'))
+    {
+        return true;
+    }
+    if (('a' <= name) && (name <= 'z'))
+    {
+        return true;
+    }
+    return false;
+}
+
 bool
 try_comment(bool* is_comment, ReadBuffer* buffer)
 {
     char last_char = ReadBuffer_peek(buffer);
-    if ((last_char == '\'') || (last_char == '\n'))
+    switch (last_char)
     {
-        ReadBuffer_pop(buffer);
-        *is_comment = (bool) last_char == '\'';
-        return true;
-    }
-    if ((last_char == ' ') || (last_char == '\t'))
-    {
+    case '\n':
+    case '\t':
+    case ' ':
         ReadBuffer_pop(buffer);
         return true;
+        break;
+    case '\'':
+        ReadBuffer_pop(buffer);
+        *is_comment = true;
+        return true;
+        break;
+    default:
+        if (*is_comment)
+        {
+            ReadBuffer_pop(buffer);
+        }
+        return *is_comment;
+        break;
     }
-    return *is_comment;
 }
 
 size_t
 get_current_address(VMState* vm, BracketStack* bracket_stack)
 {
-    for (size_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -44,7 +69,7 @@ get_current_address(VMState* vm, BracketStack* bracket_stack)
 void
 append_instruction(VMState* vm, BracketStack* bracket_stack, Instruction instruction)
 {
-    for (size_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -66,7 +91,7 @@ get_context(BracketStack* bracket_stack)
     {
         return iNone;
     }
-    for (size_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
     {
         switch (bracket_stack->data[i].symbol)
         {
@@ -96,7 +121,7 @@ get_context_jump_address(BracketStack* bracket_stack)
 Instruction
 get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 {
-    for (size_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -111,7 +136,7 @@ get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 void
 overwrite_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address, Instruction instruction)
 {
-    for (size_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -169,95 +194,95 @@ bool
 try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer)
 {
     char first_char = buffer->buffer[0];
-    if (!('A' <= first_char <= 'Z') && !('a' <= first_char <= 'z') && !(first_char == '_'))
+    if (!(is_a_letter(first_char)) && !(first_char == '_'))
     {
         return false;
     }
     char second_char = buffer->buffer[1];
     switch (second_char)
     {
-        case '{':
-            Procedure* new_procedure = Procedure_new(vm); 
-            append_instruction(
-                vm, bracket_stack,
-                (Instruction)
-                {
-                    .type = iDefineProcedure,
-                    .argument = first_char,
-                    .optional.procedure = new_procedure
-                }
-            );
-            ProcedureStack_append(vm->all_procedures, new_procedure);
-            BracketStack_append(
-                bracket_stack,
-                (BracketPos)
-                {
-                    .symbol = '{',
-                    .address = get_current_address(vm, bracket_stack) - 1,
-                    .procedure = new_procedure
-                }
-            );
-            break;
-        case '(':
-            append_instruction(
-                vm, bracket_stack,
-                (Instruction)
-                {
-                    .type = iInfiniteStart,
-                    .argument = first_char
-                }
-            );
-            BracketStack_append(
-                bracket_stack,
-                (BracketPos)
-                {
-                    .symbol = '(',
-                    .address = get_current_address(vm, bracket_stack) - 1,
-                    .procedure = NULL
-                }
-            );
-            break;
-        case '[':
-            append_instruction(
-                vm, bracket_stack,
-                (Instruction)
-                {
-                    .type = iRepeatStart,
-                    .argument = first_char
-                }
-            );
-            BracketStack_append(
-                bracket_stack,
-                (BracketPos)
-                {
-                    .symbol = '[',
-                    .address = get_current_address(vm, bracket_stack) - 1,
-                    .procedure = NULL
-                }
-            );
-            break;
-        case '?':
-            append_instruction(
-                vm, bracket_stack,
-                (Instruction)
-                {
-                    .type = iConditionalStart,
-                    .argument = first_char
-                }
-            );
-            BracketStack_append(
-                bracket_stack,
-                (BracketPos)
-                {
-                    .symbol = '?',
-                    .address = get_current_address(vm, bracket_stack) - 1,
-                    .procedure = NULL
-                }
-            );
-            break;
-        default:
-            return false;
-            break;
+    case '{':
+        Procedure* new_procedure = Procedure_new(vm); 
+        append_instruction(
+            vm, bracket_stack,
+            (Instruction)
+            {
+                .type = iDefineProcedure,
+                .argument = first_char,
+                .optional.procedure = new_procedure
+            }
+        );
+        ProcedureStack_append(vm->all_procedures, new_procedure);
+        BracketStack_append(
+            bracket_stack,
+            (BracketPos)
+            {
+                .symbol = '{',
+                .address = get_current_address(vm, bracket_stack) - 1,
+                .procedure = new_procedure
+            }
+        );
+        break;
+    case '(':
+        append_instruction(
+            vm, bracket_stack,
+            (Instruction)
+            {
+                .type = iInfiniteStart,
+                .argument = first_char
+            }
+        );
+        BracketStack_append(
+            bracket_stack,
+            (BracketPos)
+            {
+                .symbol = '(',
+                .address = get_current_address(vm, bracket_stack) - 1,
+                .procedure = NULL
+            }
+        );
+        break;
+    case '[':
+        append_instruction(
+            vm, bracket_stack,
+            (Instruction)
+            {
+                .type = iRepeatStart,
+                .argument = first_char
+            }
+        );
+        BracketStack_append(
+            bracket_stack,
+            (BracketPos)
+            {
+                .symbol = '[',
+                .address = get_current_address(vm, bracket_stack) - 1,
+                .procedure = NULL
+            }
+        );
+        break;
+    case '?':
+        append_instruction(
+            vm, bracket_stack,
+            (Instruction)
+            {
+                .type = iConditionalStart,
+                .argument = first_char
+            }
+        );
+        BracketStack_append(
+            bracket_stack,
+            (BracketPos)
+            {
+                .symbol = '?',
+                .address = get_current_address(vm, bracket_stack) - 1,
+                .procedure = NULL
+            }
+        );
+        break;
+    default:
+        return false;
+        break;
     }
     ReadBuffer_clear(buffer);
     return true;
@@ -309,25 +334,36 @@ try_argument_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* b
 bool
 try_end_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffer)
 {
+    switch (ReadBuffer_peek(buffer))
+    {
+    case '}':
+    case ')':
+    case ']':
+    case ';':
+        break;
+    default:
+        return false;
+        break;
+    }
     Instruction instruction;
     size_t current_address = get_current_address(vm, bracket_stack);
     BracketPos start_bracket = BracketStack_pop(bracket_stack);
 
     switch (ReadBuffer_peek(buffer))
     {
-        case '}':
-            ReadBuffer_clear(buffer);
-            return true;
-            break;
-        case ')':
-            instruction.type = iInfiniteEnd;
-            break;
-        case ']':
-            instruction.type = iRepeatEnd;
-            break;
-        case ';':
-            instruction.type = iConditionalEnd;
-            break;
+    case '}':
+        ReadBuffer_clear(buffer);
+        return true;
+        break;
+    case ')':
+        instruction.type = iInfiniteEnd;
+        break;
+    case ']':
+        instruction.type = iRepeatEnd;
+        break;
+    case ';':
+        instruction.type = iConditionalEnd;
+        break;
     }
     Instruction start_instruction = get_instruction(vm, bracket_stack, start_bracket.address);
     start_instruction.optional.jump_address = current_address;
@@ -344,7 +380,7 @@ bool
 try_unknown_symbol(ReadBuffer* buffer)
 {
     char current_char = ReadBuffer_peek(buffer);
-    if (('A' <= current_char <= 'Z') || ('a' <= current_char <= 'z'))
+    if (is_a_letter(current_char))
     {
         return false;
     }
@@ -384,15 +420,15 @@ try_unexpected_end(BracketStack* bracket_stack, ReadBuffer* buffer)
     }
     switch (ReadBuffer_peek(buffer))
     {
-        case '}':
-        case ')':
-        case ']':
-        case ';':
-            return true;
-            break;
-        default:
-            return false;
-            break;
+    case '}':
+    case ')':
+    case ']':
+    case ';':
+        return true;
+        break;
+    default:
+        return false;
+        break;
     }
 }
 
@@ -408,21 +444,21 @@ try_invalid_end(BracketStack* bracket_stack, ReadBuffer* buffer)
 
     switch (ReadBuffer_peek(buffer))
     {
-        case '}':
-            end_bracket = '{';
-            break;
-        case ')':
-            end_bracket = '(';
-            break;
-        case ']':
-            end_bracket = '[';
-            break;
-        case ';':
-            end_bracket = '?';
-            break;
-        default:
-            return false;
-            break;
+    case '}':
+        end_bracket = '{';
+        break;
+    case ')':
+        end_bracket = '(';
+        break;
+    case ']':
+        end_bracket = '[';
+        break;
+    case ';':
+        end_bracket = '?';
+        break;
+    default:
+        return false;
+        break;
     }
     if (expected_bracket != end_bracket)
     {
@@ -435,22 +471,22 @@ bool
 try_name_error(ReadBuffer* buffer)
 {
     char first_char = buffer->buffer[0];
-    if (!('A' <= first_char <= 'Z') && !('a' <= first_char <= 'z') && !(first_char == '_'))
+    if (!(is_a_letter(first_char)) && !(first_char == '_'))
     {
         return false;
     }
     char second_char = buffer->buffer[1];
     switch (second_char)
     {
-        case '{':
-        case '(':
-        case '[':
-        case '?':
-            return false;
-            break;
-        default:
-            return true;
-            break;
+    case '{':
+    case '(':
+    case '[':
+    case '?':
+        return false;
+        break;
+    default:
+        return true;
+        break;
     }
 }
 
@@ -460,21 +496,21 @@ try_argument_error(ReadBuffer* buffer)
     char first_char = buffer->buffer[0];
     switch (first_char)
     {
-        case '%':
-        case '=':
-        case '!':
-        case '$':
-        case '&':
-        case '<':
-        case '>':
-        case '@':
-            break;
-        default:
-            return false;
-            break;
+    case '%':
+    case '=':
+    case '!':
+    case '$':
+    case '&':
+    case '<':
+    case '>':
+    case '@':
+        break;
+    default:
+        return false;
+        break;
     }
     char second_char = buffer->buffer[1];
-    if (!('A' <= second_char <= 'Z') && !('a' <= second_char <= 'z') && !(second_char == '_'))
+    if (!(is_a_letter(second_char)) && !(second_char == '_'))
     {
         return true;
     }

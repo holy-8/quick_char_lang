@@ -392,11 +392,10 @@ execute_instruction(VMState* vm, Procedure* procedure, Instruction* instruction)
         putc(vm->stack->data[vm->stack->length - 1], stdout);
         break;
     case iInput:
-        get_variable_value(vm, procedure, *instruction);
-        set_variable(vm, procedure, *instruction, (short) getc(stdin));
+        /* TODO */
         break;
     case iInputNull:
-        ShortStack_append(vm->stack, (short) getc(stdin));
+        /* TODO */
         break;
     case iDefineProcedure:
         define_procedure(vm, *instruction);

@@ -34,6 +34,7 @@ Procedure_copy(Procedure* this)
         InstructionStack_append(
             copy->instruction_array, this->instruction_array->data[i]
         );
+        copy->instruction_array->data[i].optional.counter = 0;
     }
     return copy;
 }
@@ -75,4 +76,13 @@ ProcedureStack_append(ProcedureStack* this, Procedure* item)
     }
     this->data[this->length] = item;
     this->length++;
+}
+
+Procedure*
+ProcedureStack_pop(ProcedureStack* this)
+{
+    Procedure* item = this->data[this->length - 1];
+    this->data[this->length - 1] = NULL;
+    this->length--;
+    return item;
 }

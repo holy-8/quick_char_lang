@@ -1,0 +1,18 @@
+' Calculates first 10 fibonacci numbers.
+' Run with -d flag to see values on the stack.
+
+F {
+    &c &a &b
+    c? #; $c+ = c
+    c? #;
+    = c $c $c
+    - @F = a
+    -- @F = b
+    $a $b*
+}
+
+^ - = x
+^+++++ +++++ = r r [
+    $x + = x
+    $x @F
+]

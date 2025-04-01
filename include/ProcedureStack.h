@@ -33,4 +33,8 @@ ProcedureStack_resize(ProcedureStack* this, const size_t capacity);
 void
 ProcedureStack_append(ProcedureStack* this, Procedure* item);
 
+
+Procedure*
+ProcedureStack_pop(ProcedureStack* this);
+
 /* Generated from src/datatypes/ProcedureStack.c */

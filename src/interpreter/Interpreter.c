@@ -2,26 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "DataTypes.h"
-#include "Parser.h"
 #include "ShowStack.h"
-
-char
-get_index(const char name)
-{
-    if (('A' <= name) && (name <= 'Z'))
-    {
-        return name - 65;
-    }
-    return name - 71;
-}
+#include "Runtime.h"
 
 int
 main(int argc, char** argv)
 {
     if (argc < 2)
     {
-        fputs("ERROR! Usage: QCL <filepath> [-ss]\n", stderr);
+        fputs("ERROR! Usage: QCL <filepath> [-ss | -d]\n", stderr);
         return EXIT_FAILURE;
     }
 
@@ -37,6 +26,12 @@ main(int argc, char** argv)
         showstack(file);
         return EXIT_SUCCESS;
     }
+    if ((argc >= 3) && (strcmp(argv[2], "-d") == 0))
+    {
+        execute(file, true);
+        return EXIT_SUCCESS;
+    }
 
+    execute(file, false);
     return EXIT_SUCCESS;
 }

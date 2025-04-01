@@ -67,15 +67,19 @@ repr_instruction_type(InstructionType type)
         return "iContinue";
         break;
     case iDefineProcedure:
+    case iDefineProcedureNull:
         return "iDefineProcedure";
         break;
     case iInfiniteStart:
+    case iInfiniteStartNull:
         return "iInfiniteStart";
         break;
     case iRepeatStart:
+    case iRepeatStartNull:
         return "iRepeatStart";
         break;
     case iConditionalStart:
+    case iConditionalStartNull:
         return "iConditionalStart";
         break;
     case iInfiniteEnd:

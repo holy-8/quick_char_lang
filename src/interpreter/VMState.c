@@ -24,13 +24,6 @@ void
 VMState_free(VMState* this)
 {
     ShortStack_free(this->stack);
-    for (size_t i = 0; i < 52; i++)
-    {
-        if (this->procedures[i].is_defined)
-        {
-            Procedure_free(this->procedures[i].value);
-        }
-    }
     ProcedureStack_free(this->call_stack);
     ProcedureStack_free(this->all_procedures);
     free(this);

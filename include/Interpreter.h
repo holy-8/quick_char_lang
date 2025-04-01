@@ -4,13 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "DataTypes.h"
-#include "Parser.h"
 #include "ShowStack.h"
-
-char
-get_index(const char name);
-
+#include "Runtime.h"
 
 int
 main(int argc, char** argv);

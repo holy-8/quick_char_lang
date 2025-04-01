@@ -28,15 +28,19 @@ typedef enum InstructionType
     iInput,
     iInputNull,
     iDefineProcedure,
+    iDefineProcedureNull,
     iCall,
     iCallNull,
     iInfiniteStart,
+    iInfiniteStartNull,
     iInfiniteEnd,
     iRepeatStart,
+    iRepeatStartNull,
     iRepeatEnd,
     iEnd,
     iContinue,
     iConditionalStart,
+    iConditionalStartNull,
     iConditionalEnd
 } InstructionType;
 
@@ -58,7 +62,7 @@ typedef struct Procedure
     VMState* vm;
     Variable local_vars[52];
     InstructionStack* instruction_array;
-    size_t instruction_pointer;
+    long long instruction_pointer;
 } Procedure;
 
 typedef struct ProcedureStack

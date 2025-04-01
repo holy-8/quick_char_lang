@@ -10,8 +10,6 @@
 #include "BracketStack.h"
 #include "ReadBuffer.h"
 
-typedef long long ssize_t;
-
 bool
 is_a_letter(const char name)
 {
@@ -56,7 +54,7 @@ try_comment(ReadBuffer* buffer)
 size_t
 get_current_address(VMState* vm, BracketStack* bracket_stack)
 {
-    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -69,7 +67,7 @@ get_current_address(VMState* vm, BracketStack* bracket_stack)
 void
 append_instruction(VMState* vm, BracketStack* bracket_stack, Instruction instruction)
 {
-    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -91,7 +89,7 @@ get_context(BracketStack* bracket_stack)
     {
         return iNone;
     }
-    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = bracket_stack->length - 1; i >= 0; i--)
     {
         switch (bracket_stack->data[i].symbol)
         {
@@ -122,7 +120,7 @@ get_context_jump_address(BracketStack* bracket_stack)
 Instruction
 get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 {
-    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -137,7 +135,7 @@ get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 void
 overwrite_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address, Instruction instruction)
 {
-    for (ssize_t i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -208,7 +206,7 @@ try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffe
             vm, bracket_stack,
             (Instruction)
             {
-                .type = iDefineProcedure,
+                .type = first_char != '_' ? iDefineProcedure : iDefineProcedureNull,
                 .argument = first_char,
                 .optional.procedure = new_procedure
             }
@@ -229,8 +227,9 @@ try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffe
             vm, bracket_stack,
             (Instruction)
             {
-                .type = iInfiniteStart,
-                .argument = first_char
+                .type = first_char != '_' ? iInfiniteStart : iInfiniteStartNull,
+                .argument = first_char,
+                .optional.jump_address = 0
             }
         );
         BracketStack_append(
@@ -248,8 +247,9 @@ try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffe
             vm, bracket_stack,
             (Instruction)
             {
-                .type = iRepeatStart,
-                .argument = first_char
+                .type = first_char != '_' ? iRepeatStart : iRepeatStartNull,
+                .argument = first_char,
+                .optional.counter = 0
             }
         );
         BracketStack_append(
@@ -267,7 +267,7 @@ try_name_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buffe
             vm, bracket_stack,
             (Instruction)
             {
-                .type = iConditionalStart,
+                .type = first_char != '_' ? iConditionalStart : iConditionalStartNull,
                 .argument = first_char
             }
         );
@@ -532,7 +532,6 @@ parse_file(FILE* file)
 
     while (ReadBuffer_read(buffer))
     {
-
         if (try_comment(buffer))
         {
             continue;

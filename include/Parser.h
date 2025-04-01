@@ -12,8 +12,6 @@
 #include "BracketStack.h"
 #include "ReadBuffer.h"
 
-typedef long long ssize_t;
-
 bool
 is_a_letter(const char name);
 

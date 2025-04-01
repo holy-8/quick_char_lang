@@ -106,6 +106,7 @@ get_context(BracketStack* bracket_stack)
             break;
         }
     }
+    return iNone;
 }
 
 size_t

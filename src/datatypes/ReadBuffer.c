@@ -33,6 +33,7 @@ ReadBuffer_read(ReadBuffer* this)
     }
     this->buffer[this->length] = current_char;
     this->length++;
+    return true;
 }
 
 char

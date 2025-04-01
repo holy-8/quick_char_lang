@@ -5,6 +5,7 @@ add_executable(
     "QCL"
     src/interpreter/Interpreter.c
     src/interpreter/Parser.c
+    src/interpreter/ShowStack.c
     src/interpreter/VMState.c
     src/datatypes/BracketStack.c
     src/datatypes/DataTypes.c

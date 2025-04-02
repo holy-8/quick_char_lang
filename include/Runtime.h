@@ -82,7 +82,7 @@ handle_end(VMState* vm, Procedure* procedure, Instruction instruction);
 
 
 void
-handle_continue(VMState* vm, Procedure* procedure, Instruction instruction);
+handle_continue(Procedure* procedure, Instruction instruction);
 
 
 void

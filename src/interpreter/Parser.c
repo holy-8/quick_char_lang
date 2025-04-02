@@ -54,7 +54,7 @@ try_comment(ReadBuffer* buffer)
 size_t
 get_current_address(VMState* vm, BracketStack* bracket_stack)
 {
-    for (long long i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -67,7 +67,7 @@ get_current_address(VMState* vm, BracketStack* bracket_stack)
 void
 append_instruction(VMState* vm, BracketStack* bracket_stack, Instruction instruction)
 {
-    for (long long i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -89,7 +89,7 @@ get_context(BracketStack* bracket_stack)
     {
         return iNone;
     }
-    for (long long i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
     {
         switch (bracket_stack->data[i].symbol)
         {
@@ -120,7 +120,7 @@ get_context_jump_address(BracketStack* bracket_stack)
 Instruction
 get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 {
-    for (long long i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {
@@ -135,7 +135,7 @@ get_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address)
 void
 overwrite_instruction(VMState* vm, BracketStack* bracket_stack, const size_t address, Instruction instruction)
 {
-    for (long long i = bracket_stack->length - 1; i >= 0; i--)
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
     {
         if (bracket_stack->data[i].symbol == '{')
         {

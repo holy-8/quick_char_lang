@@ -42,11 +42,11 @@ get_current_procedure(VMState* vm)
 void
 assert_stack_length(VMState* vm, const int length, Instruction instruction)
 {
-    if (vm->stack->length < length)
+    if ((int) vm->stack->length < length)
     {
         fprintf(
             stderr,
-            "ERROR! Instruction %s Expected %d elements on the stack, got %lld instead.\n",
+            "ERROR! Instruction %s Expected %d elements on the stack, got %d instead.\n",
             repr_instruction_type(instruction.type), length, vm->stack->length
         );
         exit(EXIT_FAILURE);
@@ -56,7 +56,7 @@ assert_stack_length(VMState* vm, const int length, Instruction instruction)
 short
 get_variable_value(VMState* vm, Procedure* procedure, Instruction instruction)
 {
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     if (procedure->local_vars[index].is_defined)
     {
@@ -78,7 +78,7 @@ get_variable_value(VMState* vm, Procedure* procedure, Instruction instruction)
 void
 set_variable(VMState* vm, Procedure* procedure, Instruction instruction, short value)
 {
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     if (procedure->local_vars[index].is_defined)
     {
@@ -93,7 +93,7 @@ set_variable(VMState* vm, Procedure* procedure, Instruction instruction, short v
 void
 delete_variable(VMState* vm, Procedure* procedure, Instruction instruction)
 {
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     if (procedure->local_vars[index].is_defined)
     {
@@ -124,7 +124,7 @@ create_local_variable(VMState* vm, Procedure* procedure, Instruction instruction
         fprintf(stderr, "ERROR! Local variables cannot be creates in global scope.\n");
         exit(EXIT_FAILURE);
     }
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     procedure->local_vars[index].is_defined = true;
     procedure->local_vars[index].value = 0;
@@ -188,7 +188,7 @@ reverse_stack(VMState* vm, const size_t length)
 void
 define_procedure(VMState* vm, Instruction instruction)
 {
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     vm->procedures[index].is_defined = true;
     vm->procedures[index].value = instruction.optional.procedure;
@@ -197,7 +197,7 @@ define_procedure(VMState* vm, Instruction instruction)
 Procedure*
 get_procedure(VMState* vm, Instruction instruction)
 {
-    char index = get_index(instruction.argument);
+    unsigned char index = (unsigned char) get_index(instruction.argument);
 
     if (vm->procedures[index].is_defined)
     {
@@ -295,7 +295,7 @@ handle_end(VMState* vm, Procedure* procedure, Instruction instruction)
 }
 
 void
-handle_continue(VMState* vm, Procedure* procedure, Instruction instruction)
+handle_continue(Procedure* procedure, Instruction instruction)
 {
     switch (instruction.argument)
     {
@@ -434,7 +434,7 @@ execute_instruction(VMState* vm, Procedure* procedure, Instruction* instruction)
         handle_end(vm, procedure, *instruction);
         break;
     case iContinue:
-        handle_continue(vm, procedure, *instruction);
+        handle_continue(procedure, *instruction);
         break;
     case iConditionalStart:
         argument = get_variable_value(vm, procedure, *instruction);
@@ -496,13 +496,13 @@ execute(FILE* file, bool debug_info)
     if (debug_info)
     {
         printf("Stack:\n");
-        for (long long i = vm->stack->length - 1; i >= 0; i--)
+        for (long long i = (long long) vm->stack->length - 1; i >= 0; i--)
         {
             printf("  %d\n", vm->stack->data[i]);
         }
 
         printf("Global variables:\n");
-        for (char i = 0; i < 52; i++)
+        for (unsigned char i = 0; i < 52; i++)
         {
             if (vm->global_vars[i].is_defined)
             {
@@ -510,7 +510,7 @@ execute(FILE* file, bool debug_info)
             }
         }
         printf("Defined procedures:\n");
-        for (char i = 0; i < 52; i++)
+        for (unsigned char i = 0; i < 52; i++)
         {
             if (vm->procedures[i].is_defined)
             {

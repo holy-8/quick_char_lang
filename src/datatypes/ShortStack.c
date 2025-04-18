@@ -69,7 +69,7 @@ ShortStack*
 ShortStack_reversed(ShortStack* this)
 {
     ShortStack* reversed = ShortStack_new(this->capacity);
-    for (long long i = this->length - 1; i >= 0; i++)
+    for (long long i = this->length - 1; i >= 0; i--)
     {
         ShortStack_append(reversed, this->data[i]);
     }

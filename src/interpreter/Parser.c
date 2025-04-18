@@ -108,13 +108,34 @@ get_context(BracketStack* bracket_stack)
 }
 
 size_t
-get_context_jump_address(BracketStack* bracket_stack)
+get_context_jump_address(BracketStack* bracket_stack, const InstructionType lookup_type)
 {
-    if (bracket_stack->length == 0)
+    char lookup_symbol;
+
+    switch (lookup_type)
     {
+    case iDefineProcedure:
+        lookup_symbol = '{';
+        break;
+    case iRepeatStart:
+        lookup_symbol = '[';
+        break;
+    case iInfiniteStart:
+        lookup_symbol = '(';
+        break;
+    default:
         return 0;
+        break;
     }
-    return bracket_stack->data[bracket_stack->length - 1].address;
+
+    for (long long i = (long long) bracket_stack->length - 1; i >= 0; i--)
+    {
+        if (bracket_stack->data[i].symbol == lookup_symbol)
+        {
+            return bracket_stack->data[i].address;
+        }
+    }
+    return 0;
 }
 
 Instruction
@@ -173,12 +194,12 @@ try_simple_instruction(VMState* vm, BracketStack* bracket_stack, ReadBuffer* buf
     case '#':
         instruction.type = iEnd;
         instruction.argument = get_context(bracket_stack);
-        instruction.optional.jump_address = get_context_jump_address(bracket_stack);
+        instruction.optional.jump_address = get_context_jump_address(bracket_stack, instruction.argument);
         break;
     case ':':
         instruction.type = iContinue;
         instruction.argument = get_context(bracket_stack);
-        instruction.optional.jump_address = get_context_jump_address(bracket_stack);
+        instruction.optional.jump_address = get_context_jump_address(bracket_stack, instruction.argument);
         break;
     default:
         return false;

@@ -56,9 +56,27 @@ repr_instruction_type(InstructionType type)
     case iInputNull:
         return "iInput";
         break;
+    case iDefineProcedure:
+    case iDefineProcedureNull:
+        return "iDefineProcedure";
+        break;
     case iCall:
     case iCallNull:
         return "iCall";
+        break;
+    case iInfiniteStart:
+    case iInfiniteStartNull:
+        return "iInfiniteStart";
+        break;
+    case iInfiniteEnd:
+        return "iInfiniteEnd";
+        break;
+    case iRepeatStart:
+    case iRepeatStartNull:
+        return "iRepeatStart";
+        break;
+    case iRepeatEnd:
+        return "iRepeatEnd";
         break;
     case iEnd:
         return "iEnd";
@@ -66,27 +84,9 @@ repr_instruction_type(InstructionType type)
     case iContinue:
         return "iContinue";
         break;
-    case iDefineProcedure:
-    case iDefineProcedureNull:
-        return "iDefineProcedure";
-        break;
-    case iInfiniteStart:
-    case iInfiniteStartNull:
-        return "iInfiniteStart";
-        break;
-    case iRepeatStart:
-    case iRepeatStartNull:
-        return "iRepeatStart";
-        break;
     case iConditionalStart:
     case iConditionalStartNull:
         return "iConditionalStart";
-        break;
-    case iInfiniteEnd:
-        return "iInfiniteEnd";
-        break;
-    case iRepeatEnd:
-        return "iRepeatEnd";
         break;
     case iConditionalEnd:
         return "iConditionalEnd";
@@ -110,7 +110,7 @@ repr_instruction(const size_t index, Instruction instruction)
     case iAdd:
     case iSubtract:
         printf(
-            "  %d: type=%s\n", index, type_repr
+            "  %lld: type=%s\n", index, type_repr
         );
         break;
     case iReverse:
@@ -130,37 +130,41 @@ repr_instruction(const size_t index, Instruction instruction)
     case iCall:
     case iCallNull:
         printf(
-            "  %d: type=%s, argument='%c'\n", index, type_repr, instruction.argument
+            "  %lld: type=%s, argument='%c'\n", index, type_repr, instruction.argument
         );
         break;
     case iEnd:
     case iContinue:
         printf(
-            "  %d: type=%s, context=%d\n", index, type_repr, instruction.argument
+            "  %lld: type=%s, context=%d, jump_address=%lld\n", index, type_repr, instruction.argument, instruction.optional.jump_address
         );
         break;
     case iDefineProcedure:
+    case iDefineProcedureNull:
         printf(
-            "  %d: type=%s, argument='%c', procedure=%p\n", index, type_repr, instruction.argument, instruction.optional.procedure
+            "  %lld: type=%s, argument='%c', procedure=%p\n", index, type_repr, instruction.argument, instruction.optional.procedure
         );
         break;
     case iInfiniteStart:
+    case iInfiniteStartNull:
     case iRepeatStart:
+    case iRepeatStartNull:
     case iConditionalStart:
+    case iConditionalStartNull:
         printf(
-            "  %d: type=%s, argument='%c', jump_address=%d\n", index, type_repr, instruction.argument, instruction.optional.jump_address
+            "  %lld: type=%s, argument='%c', jump_address=%lld\n", index, type_repr, instruction.argument, instruction.optional.jump_address
         );
         break;
     case iInfiniteEnd:
     case iRepeatEnd:
     case iConditionalEnd:
         printf(
-            "  %d: type=%s, jump_address=%d\n", index, type_repr, instruction.optional.jump_address
+            "  %lld: type=%s, jump_address=%lld\n", index, type_repr, instruction.optional.jump_address
         );
         break;
     default:
         printf(
-            "  %d: ERROR! Invalid instruction type %d\n", index, instruction.type
+            "  %lld: ERROR! Invalid instruction type %d\n", index, instruction.type
         );
         break;
     }
@@ -169,7 +173,7 @@ repr_instruction(const size_t index, Instruction instruction)
 void
 repr_procedure(const size_t index, Procedure* procedure)
 {
-    printf("%d: Procedure (address: %p)\n", index, procedure);
+    printf("%lld: Procedure (address: %p)\n", index, procedure);
     for (size_t i = 0; i < procedure->instruction_array->length; i++)
     {
         repr_instruction(i, procedure->instruction_array->data[i]);

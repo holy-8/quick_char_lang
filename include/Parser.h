@@ -33,7 +33,7 @@ get_context(BracketStack* bracket_stack);
 
 
 size_t
-get_context_jump_address(BracketStack* bracket_stack);
+get_context_jump_address(BracketStack* bracket_stack, const InstructionType lookup_type);
 
 
 Instruction

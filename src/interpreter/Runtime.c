@@ -46,7 +46,7 @@ assert_stack_length(VMState* vm, const int length, Instruction instruction)
     {
         fprintf(
             stderr,
-            "ERROR! Instruction %s Expected %d elements on the stack, got %d instead.\n",
+            "ERROR! Instruction %s Expected %d elements on the stack, got %lld instead.\n",
             repr_instruction_type(instruction.type), length, vm->stack->length
         );
         exit(EXIT_FAILURE);
@@ -121,7 +121,7 @@ create_local_variable(VMState* vm, Procedure* procedure, Instruction instruction
 {
     if (is_global_scope(vm))
     {
-        fprintf(stderr, "ERROR! Local variables cannot be creates in global scope.\n");
+        fprintf(stderr, "ERROR! Local variables cannot be created in global scope.\n");
         exit(EXIT_FAILURE);
     }
     unsigned char index = (unsigned char) get_index(instruction.argument);
@@ -135,7 +135,7 @@ global_variables_to_local(VMState* vm, Procedure* procedure)
 {
     if (is_global_scope(vm))
     {
-        fprintf(stderr, "ERROR! Local variables cannot be creates in global scope.\n");
+        fprintf(stderr, "ERROR! Local variables cannot be created in global scope.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -417,6 +417,11 @@ execute_instruction(VMState* vm, Procedure* procedure, Instruction* instruction)
         }
         break;
     case iInfiniteStartNull:
+        assert_stack_length(vm, 1, *instruction);
+        if (vm->stack->data[vm->stack->length - 1] <= 0)
+        {
+            procedure->instruction_pointer = instruction->optional.jump_address;
+        }
         break;
     case iInfiniteEnd:
         procedure->instruction_pointer = instruction->optional.jump_address - 1;
@@ -514,7 +519,7 @@ execute(FILE* file, bool debug_info)
         {
             if (vm->procedures[i].is_defined)
             {
-                printf("  %c (address: %p)", get_name(i), vm->procedures[i].value);
+                printf("  %c (address: %p)\n", get_name(i), vm->procedures[i].value);
             }
         }
     }
